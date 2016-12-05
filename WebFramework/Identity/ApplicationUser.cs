@@ -4,5 +4,6 @@ namespace WebFramework.Identity
 {
     public class ApplicationUser : IdentityUser
     {
+
     }
 }

@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-using System.IO;
 
 using WebFramework.Identity;
 using WebFramework.Services;
@@ -19,8 +16,8 @@ namespace WebFramework
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)//通用配置
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);//特殊环境配置项
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)//通用设置
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);//指定环境设置项
 
             if (env.IsDevelopment())
             {
@@ -51,12 +48,13 @@ namespace WebFramework
             //    options.Lockout.AllowedForNewUsers = true;
             //});
 
+            services.AddSingleton<RoleManager<ApplicationRole>, ApplicationRoleManager>();
             services.AddSingleton<UserManager<ApplicationUser>, ApplicationUserManager>();
             services.AddScoped<SignInManager<ApplicationUser>, ApplicationSignInManager>();
 
             services.AddMvc();
 
-            //
+            //注册Email服务和短信服务
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
         }
@@ -85,11 +83,11 @@ namespace WebFramework
             //路由配置
             app.UseMvc(routes =>
             {
-                //mvc 路由
+                //MVC 路由
                 routes.MapRoute(
                     name: "mvc",
                     template: "{controller=Home}/{action=Index}/{id?}");
-                //web api 路由
+                //API 路由
                 routes.MapRoute(
                 name: "api",
                 template: "api/{controller}/{id?}");
