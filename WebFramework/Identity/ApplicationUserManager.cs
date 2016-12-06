@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 namespace WebFramework.Identity
 {
+    /// <summary>
+    /// 用户管理器
+    /// </summary>
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
         public ApplicationUserManager(
@@ -21,7 +24,6 @@ namespace WebFramework.Identity
             ILogger<UserManager<ApplicationUser>> logger)
             : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
-
         }
     }
 }

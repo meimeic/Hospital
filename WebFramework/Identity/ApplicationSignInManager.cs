@@ -6,6 +6,9 @@ using Microsoft.Extensions.Options;
 
 namespace WebFramework.Identity
 {
+    /// <summary>
+    /// 用户登录管理器
+    /// </summary>
     public class ApplicationSignInManager : SignInManager<ApplicationUser>
     {
         public ApplicationSignInManager(

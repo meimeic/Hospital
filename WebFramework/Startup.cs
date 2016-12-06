@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
+using System;
 using WebFramework.Identity;
 using WebFramework.Services;
 namespace WebFramework
@@ -40,13 +41,31 @@ namespace WebFramework
                 .AddDefaultTokenProviders();
 
             //认证参数设置
-            //services.Configure<IdentityOptions>(options =>
-            //{
-            //    var dataProtectionPath = Path.Combine(_env.WebRootPath, "identity-artifacts");
-            //    options.Cookies.ApplicationCookie.AuthenticationScheme = "ApplicationCookie";
-            //    options.Cookies.ApplicationCookie.DataProtectionProvider = DataProtectionProvider.Create(dataProtectionPath);
-            //    options.Lockout.AllowedForNewUsers = true;
-            //});
+            services.Configure<IdentityOptions>(options =>
+            {
+                // 密码参数
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = false;
+
+                // 账户锁定参数
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // Cookies 参数
+                options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(150);
+                options.Cookies.ApplicationCookie.LoginPath = "/Account/LogIn";
+                options.Cookies.ApplicationCookie.LogoutPath = "/Account/LogOff";
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+                //var dataProtectionPath = Path.Combine(_env.WebRootPath, "identity-artifacts");
+                //options.Cookies.ApplicationCookie.DataProtectionProvider = DataProtectionProvider.Create(dataProtectionPath);
+                //options.Cookies.ApplicationCookie.AuthenticationScheme = "ApplicationCookie";
+            });
 
             services.AddSingleton<RoleManager<ApplicationRole>, ApplicationRoleManager>();
             services.AddSingleton<UserManager<ApplicationUser>, ApplicationUserManager>();
@@ -55,8 +74,8 @@ namespace WebFramework
             services.AddMvc();
 
             //注册Email服务和短信服务
-            services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddTransient<IEmailSender, AuthMessageSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

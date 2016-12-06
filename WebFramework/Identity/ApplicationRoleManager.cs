@@ -5,6 +5,9 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 namespace WebFramework.Identity
 {
+    /// <summary>
+    /// 用户角色管理器
+    /// </summary>
     public class ApplicationRoleManager : RoleManager<ApplicationRole>
     {
         public ApplicationRoleManager(
