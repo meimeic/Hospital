@@ -56,15 +56,18 @@ namespace WebFramework
                 options.Lockout.AllowedForNewUsers = true;
 
                 // Cookies 参数
+                options.Cookies.ApplicationCookie.AuthenticationScheme = "ApplicationCookie";
+                options.Cookies.ApplicationCookie.AutomaticAuthenticate = true;
+                options.Cookies.ApplicationCookie.AutomaticChallenge = true;
                 options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(150);
-                options.Cookies.ApplicationCookie.LoginPath = "/Account/LogIn";
+                options.Cookies.ApplicationCookie.LoginPath = "/Account/Login";
                 options.Cookies.ApplicationCookie.LogoutPath = "/Account/LogOff";
-
-                // User settings
-                options.User.RequireUniqueEmail = true;
                 //var dataProtectionPath = Path.Combine(_env.WebRootPath, "identity-artifacts");
                 //options.Cookies.ApplicationCookie.DataProtectionProvider = DataProtectionProvider.Create(dataProtectionPath);
-                //options.Cookies.ApplicationCookie.AuthenticationScheme = "ApplicationCookie";
+              
+                
+                // User settings
+                options.User.RequireUniqueEmail = true;
             });
 
             services.AddSingleton<RoleManager<ApplicationRole>, ApplicationRoleManager>();
